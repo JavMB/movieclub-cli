@@ -1,9 +1,9 @@
-package logic;
+package logic.filters;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProfanityFilter {
+public class ProfanityFilter implements Filter<String> {
     private Set<String> badWords;
 
     public ProfanityFilter() {
@@ -20,18 +20,20 @@ public class ProfanityFilter {
         badWords.add("cabron");
     }
 
-    public boolean checkWord(String word) {
+    public boolean isInsult(String word) {
         return badWords.contains(word);
     }
 
-    public boolean containsProfanity(String titulo) {
+
+    @Override
+    public boolean isValid(String titulo) {
         String[] words = titulo.toLowerCase().split("\\s+");
 
         for (String word : words) {
-            if (checkWord(word))
-                return true;
+            if (isInsult(word))
+                return false;
         }
 
-        return false;
+        return true;
     }
 }

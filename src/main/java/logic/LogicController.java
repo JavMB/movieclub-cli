@@ -1,15 +1,25 @@
 package logic;
 
-import persistance.PersistanceController;
+
+import logic.filters.Filter;
+import logic.filters.GenreFilter;
+import logic.filters.ProfanityFilter;
+import persistance.PersistencaController;
+import persistance.entity.Movie;
 import persistance.entity.enums.PegiEnum;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 public class LogicController {
-    private PersistanceController persistanceController;
+    private final static int MAX_MOVIES = 50;
+    private PersistencaController persistanceController;
+
+    private Filter<String> profanityFilter = new ProfanityFilter();
+    private Filter<String> generoFilter = new GenreFilter();
 
     public LogicController() {
-        persistanceController = new PersistanceController();
+        persistanceController = new PersistencaController();
     }
 
     public void createMovie(int id, String titulo, String genero, String director, PegiEnum pegi, LocalDate fecha, int stock) throws IllegalArgumentException {
@@ -36,6 +46,7 @@ public class LogicController {
             throw new IllegalArgumentException("Stock invalido");
         }
 
+        persistanceController.saveMovie(new Movie(id, titulo, genero, director, fecha, pegi, stock));
 
     }
 
@@ -44,12 +55,20 @@ public class LogicController {
         int totalMoviesInDB = persistanceController.getMovieCount();
         boolean condicionMovieIdMenorQueTotalInDB = totalMoviesInDB <= id;
         boolean condicionMovieIdNegativeOrZero = totalMoviesInDB <= 0;
-        //Habria que validar que el id que se va meter no exista ya dentro de la BD
+
+        //TODO Habria que validar que el id que se va meter no exista ya dentro de la BD
+
+        return !condicionMovieIdNegativeOrZero && !condicionMovieIdMenorQueTotalInDB;
 
     }
 
     private boolean validateTitulo(String titulo) {
         //Validar que no haya palabras malsonantes, formato = minusculas
+
+        if (!titulo.equals(titulo.toLowerCase()) || profanityFilter.isValid(titulo)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -64,18 +83,20 @@ public class LogicController {
     }
 
     private boolean validateFecha(LocalDate fecha) {
-        //Todas las pelis antes del 2000
-        return true;
+        //Fechas despues del 2000
+        LocalDate limite = LocalDate.of(2000, 1, 1);
+        return fecha.isAfter(limite);
     }
+
 
     private boolean validatePegi(PegiEnum pegi) {
         //No quiero ALL publicos
-        return true;
+        return pegi != PegiEnum.ALL;
     }
 
     private boolean validateStock(int stock) {
         // No stock negativo y ademas validar valor maximo.
-        return true;
+        return stock <= MAX_MOVIES && stock >= 0;
     }
 
 

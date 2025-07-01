@@ -1,4 +1,6 @@
 package logic.filters;
 
-public interface Filter {
+public interface Filter<T> {
+
+    boolean isValid(T t);
 }

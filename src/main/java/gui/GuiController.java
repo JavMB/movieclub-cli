@@ -47,27 +47,23 @@ public class GuiController {
         logicController.createMovie(id, titulo, genero, director, pegi, fecha, stock);
 
     }
+    // private void read() {
+//     System.out.println("Dime el id:");
+//     int id = IO.readInt("Dime el id");
+//     try {
+//
+//         Movie movie = logicController.read(id);
+//
+//         if (movie == null) {
+//             System.out.println("La película con ese ID no existe.");
+//         } else {
+//             System.out.println("Película encontrada: " + movie.getTitulo());
+//         }
 
-
-    private void read() {
-        System.out.println("Dime el id:");
-        int id = IO.readInt("Dime el id");
-
-        try {
-            Movie movie = logicController.read(id);
-
-            if (movie == null) {
-                System.out.println("La película con ese ID no existe.");
-            } else {
-                System.out.println("Película encontrada: " + movie.getTitulo());
-            }
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error al leer la película: " + e.getMessage());
-        }
-
-
-    }
+//     } catch (IllegalArgumentException e) {
+//         System.out.println("Error al leer la película: " + e.getMessage());
+//     }
+// }
 
 
     private int menu() {
