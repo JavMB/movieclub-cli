@@ -9,7 +9,6 @@ import persistance.entity.Movie;
 import persistance.entity.enums.PegiEnum;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 public class LogicController {
     private final static int MAX_MOVIES = 50;
@@ -22,10 +21,8 @@ public class LogicController {
         persistanceController = new PersistencaController();
     }
 
-    public void createMovie(int id, String titulo, String genero, String director, PegiEnum pegi, LocalDate fecha, int stock) throws IllegalArgumentException {
-        if (!validateId(id)) {
-            throw new IllegalArgumentException("Id invalido");
-        }
+    public void createMovie(String titulo, String genero, String director, PegiEnum pegi, LocalDate fecha, int stock) throws IllegalArgumentException {
+
         if (!validateTitulo(titulo)) {
             throw new IllegalArgumentException("Titulo invalido");
         }
@@ -45,27 +42,30 @@ public class LogicController {
         if (!validateStock(stock)) {
             throw new IllegalArgumentException("Stock invalido");
         }
+        Movie movie = new Movie();
 
-        persistanceController.saveMovie(new Movie(id, titulo, genero, director, fecha, pegi, stock));
+        movie.setId(persistanceController.getMovieCount() + 1); // int newId=generarId();
+
+        persistanceController.saveMovie(movie);
 
     }
 
 
     private boolean validateId(int id) {
         int totalMoviesInDB = persistanceController.getMovieCount();
-        boolean condicionMovieIdMenorQueTotalInDB = totalMoviesInDB <= id;
-        boolean condicionMovieIdNegativeOrZero = totalMoviesInDB <= 0;
+        boolean condicionMovieIdMenorQueTotalInDB = id <= totalMoviesInDB;
+        boolean condicionMovieIdNegativeOrZero = id <= 0;
 
         //TODO Habria que validar que el id que se va meter no exista ya dentro de la BD
 
-        return !condicionMovieIdNegativeOrZero && !condicionMovieIdMenorQueTotalInDB;
+        return condicionMovieIdNegativeOrZero && !condicionMovieIdMenorQueTotalInDB;
 
     }
 
     private boolean validateTitulo(String titulo) {
         //Validar que no haya palabras malsonantes, formato = minusculas
 
-        if (!titulo.equals(titulo.toLowerCase()) || profanityFilter.isValid(titulo)) {
+        if (!titulo.equals(titulo.toLowerCase()) || !profanityFilter.isValid(titulo)) {
             return false;
         }
 
@@ -91,7 +91,7 @@ public class LogicController {
 
     private boolean validatePegi(PegiEnum pegi) {
         //No quiero ALL publicos
-        return pegi != PegiEnum.ALL;
+        return !pegi.equals(PegiEnum.ALL);
     }
 
     private boolean validateStock(int stock) {

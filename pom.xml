@@ -21,7 +21,14 @@
             <artifactId>postgresql</artifactId>
             <version>42.7.7</version>
         </dependency>
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.4.3</version>
+        </dependency>
     </dependencies>
+
+
 
 
 

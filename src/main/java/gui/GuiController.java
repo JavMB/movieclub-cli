@@ -11,8 +11,8 @@ import java.time.LocalDate;
 public class GuiController {
     public final LogicController logicController;
 
-    public GuiController(LogicController logicController) {
-        this.logicController = logicController;
+    public GuiController() {
+        this.logicController = new LogicController();
     }
 
     public void start() {
@@ -35,7 +35,6 @@ public class GuiController {
 
 
     private void showMovieCreationInterface() {
-        int id = IO.readInt("Dime el id");
         String titulo = IO.readNonEmptyString("Dime el titulo");
         String genero = IO.readNonEmptyString("Dime el genero");
         String director = IO.readNonEmptyString("Dime el director");
@@ -43,10 +42,9 @@ public class GuiController {
         LocalDate fecha = Fechas.parsearFecha(IO.readString("Dime la fecha"));
         int stock = IO.readInt("Dime la stock");
 
-
-        logicController.createMovie(id, titulo, genero, director, pegi, fecha, stock);
-
+        logicController.createMovie(titulo, genero, director, pegi, fecha, stock);
     }
+
     // private void read() {
 //     System.out.println("Dime el id:");
 //     int id = IO.readInt("Dime el id");
