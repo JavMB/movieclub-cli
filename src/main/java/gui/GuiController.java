@@ -3,65 +3,78 @@ package gui;
 import lib.Fechas;
 import lib.IO;
 import logic.LogicController;
-import persistance.entity.Movie;
 import persistance.entity.enums.PegiEnum;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class GuiController {
-    public final LogicController logicController;
+    private final LogicController logicController;
 
     public GuiController() {
         this.logicController = new LogicController();
     }
 
     public void start() {
-        switch (menu()) {
-            case 1:
-                showMovieCreationInterface();
+        int option;
+        do {
+            option = menu();
 
-            case 2:
-
-            case 3:
-
-            case 4:
-
-            default:
-
-        }
+            switch (option) {
+                case 1:
+                    showMovieCreationInterface();
+                    break;
+                case 2:
 
 
+                case 3:
+
+
+                case 4:
+
+
+                case 5:
+                    System.out.println("chao");
+                    break;
+                default:
+                    System.out.println("Opcion no valida");
+                    break;
+            }
+        } while (option != 5);
     }
-
 
     private void showMovieCreationInterface() {
-        String titulo = IO.readNonEmptyString("Dime el titulo");
-        String genero = IO.readNonEmptyString("Dime el genero");
-        String director = IO.readNonEmptyString("Dime el director");
-        PegiEnum pegi = PegiEnum.valueOf(IO.readNonEmptyString("Dime la calificacion de edad"));
-        LocalDate fecha = Fechas.parsearFecha(IO.readString("Dime la fecha"));
-        int stock = IO.readInt("Dime la stock");
+        boolean validado = false;
 
-        logicController.createMovie(titulo, genero, director, pegi, fecha, stock);
+        do {
+            try {
+                System.out.println("\n========== CREAR PELÍCULA ==========");
+
+                String titulo = IO.readNonEmptyString("Dime el título (minsucula):");
+                String genero = IO.readNonEmptyString("Dime el género:");
+                String director = IO.readNonEmptyString("Dime el director:");
+
+                System.out.println("Clasificaciones disponibles: " + Arrays.toString(PegiEnum.values()));
+                PegiEnum pegi = PegiEnum.valueOf(IO.readNonEmptyString("Dime la calificación de edad:").toUpperCase());
+
+                LocalDate fecha = Fechas.parsearFecha(IO.readString("Dime la fecha (dd/MM/yyyy):"));
+                int stock = IO.readInt("Dime el stock:");
+
+                logicController.createMovie(titulo, genero, director, pegi, fecha, stock);
+
+                System.out.println("Película creada exitosamente!");
+                validado = true;
+
+            } catch (IllegalArgumentException iae) {
+                System.out.println("Error: " + iae.getMessage());
+                System.out.println("Por favor, intenta de nuevo.\n");
+            } catch (Exception e) {
+                System.out.println("Error inesperado: " + e.getMessage());
+                System.out.println("Por favor, intenta de nuevo.\n");
+            }
+
+        } while (!validado);
     }
-
-    // private void read() {
-//     System.out.println("Dime el id:");
-//     int id = IO.readInt("Dime el id");
-//     try {
-//
-//         Movie movie = logicController.read(id);
-//
-//         if (movie == null) {
-//             System.out.println("La película con ese ID no existe.");
-//         } else {
-//             System.out.println("Película encontrada: " + movie.getTitulo());
-//         }
-
-//     } catch (IllegalArgumentException e) {
-//         System.out.println("Error al leer la película: " + e.getMessage());
-//     }
-// }
 
 
     private int menu() {
@@ -69,21 +82,23 @@ public class GuiController {
         int option;
 
         do {
-            System.out.println("========== VIDEOCLUB ==========");
-            System.out.println("1. Crear cliente");
-            System.out.println("2. Mostrar clientes");
-            System.out.println("3. Actualizar cliente");
-            System.out.println("4. Eliminar cliente");
+            System.out.println("\n========== VIDEOCLUB ==========");
+            System.out.println("1. Crear película");
+            System.out.println("2. Mostrar película");
+            System.out.println("3. Actualizar película");
+            System.out.println("4. Eliminar película");
+            System.out.println("5. Salir");
 
             option = IO.readInt("Seleccione una opción:");
 
-            valida = option >= 1 && option <= 4;
+            valida = option >= 1 && option <= 5;
+
+            if (!valida) {
+                System.out.println("Opción no válida. Por favor, selecciona entre 1 y 5.");
+            }
 
         } while (!valida);
 
         return option;
-
     }
-
-
 }

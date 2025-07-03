@@ -9,9 +9,9 @@ public class GenreFilter implements Filter<String> {
         bannedGenres = Set.of("porno", "erótico", "adulto");
     }
 
-
     @Override
     public boolean isValid(String genero) {
         return !bannedGenres.contains(genero.toLowerCase());
     }
+    
 }

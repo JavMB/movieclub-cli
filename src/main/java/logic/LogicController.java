@@ -1,6 +1,7 @@
 package logic;
 
 
+import logic.filters.DirectorFilter;
 import logic.filters.Filter;
 import logic.filters.GenreFilter;
 import logic.filters.ProfanityFilter;
@@ -12,10 +13,13 @@ import java.time.LocalDate;
 
 public class LogicController {
     private final static int MAX_MOVIES = 50;
-    private PersistencaController persistanceController;
+    private final PersistencaController persistanceController;
 
-    private Filter<String> profanityFilter = new ProfanityFilter();
-    private Filter<String> generoFilter = new GenreFilter();
+    private final Filter<String> profanityFilter = new ProfanityFilter();
+    private final Filter<String> generoFilter = new GenreFilter();
+    private final Filter<String> directorFilter = new DirectorFilter();
+
+
 
     public LogicController() {
         persistanceController = new PersistencaController();
@@ -45,20 +49,24 @@ public class LogicController {
         Movie movie = new Movie();
 
         movie.setId(persistanceController.getMovieCount() + 1); // int newId=generarId();
+        movie.setTitulo(titulo);
+        movie.setGenero(genero);
+        movie.setNombreDirector(director);
+        movie.setClasificacionEdad(pegi);
+        movie.setFechaLanzamiento(fecha);
+        movie.setStock(stock);
 
         persistanceController.saveMovie(movie);
 
     }
-
 
     private boolean validateId(int id) {
         int totalMoviesInDB = persistanceController.getMovieCount();
         boolean condicionMovieIdMenorQueTotalInDB = id <= totalMoviesInDB;
         boolean condicionMovieIdNegativeOrZero = id <= 0;
 
-        //TODO Habria que validar que el id que se va meter no exista ya dentro de la BD
-
-        return condicionMovieIdNegativeOrZero && !condicionMovieIdMenorQueTotalInDB;
+        // valida que el id existe para poder traerlo
+        return !condicionMovieIdNegativeOrZero && condicionMovieIdMenorQueTotalInDB;
 
     }
 
@@ -73,13 +81,13 @@ public class LogicController {
     }
 
     private boolean validateGenero(String genero) {
-        // Validar que no sean de porno
-        return true;
+        // Validar que no sean de porno/similar
+        return generoFilter.isValid(genero);
     }
 
     private boolean validateDirector(String director) {
-        //Validar no quiero que sea de Nacho Vidal o Derivadas , Tarantino
-        return true;
+        //Validar no sea de Nacho Vidal o Derivadas ,Tarantino
+        return directorFilter.isValid(director);
     }
 
     private boolean validateFecha(LocalDate fecha) {
