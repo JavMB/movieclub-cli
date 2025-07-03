@@ -1,5 +1,4 @@
 package lib;
-
 import net.datafaker.Faker;
 
 import java.time.LocalDate;

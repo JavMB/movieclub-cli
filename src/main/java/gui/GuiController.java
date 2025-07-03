@@ -3,10 +3,12 @@ package gui;
 import lib.Fechas;
 import lib.IO;
 import logic.LogicController;
+import persistance.entity.Movie;
 import persistance.entity.enums.PegiEnum;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 public class GuiController {
     private final LogicController logicController;
@@ -25,6 +27,7 @@ public class GuiController {
                     showMovieCreationInterface();
                     break;
                 case 2:
+                    showAllMoviesInfo();
 
 
                 case 3:
@@ -41,6 +44,24 @@ public class GuiController {
                     break;
             }
         } while (option != 5);
+    }
+
+
+    public void showAllMoviesInfo() {
+        try {
+            List<Movie> movies = logicController.retrieveAllMovies();
+            if (movies == null || movies.isEmpty()) {
+                System.out.println("No se encontraron películas.");
+            } else {
+                for (Movie movie : movies) {
+                    System.out.println(movie);
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Error: No se pudo obtener la información de las películas (null recibido).");
+        } catch (Exception e) {
+            System.out.println("Ocurrió un error inesperado: " + e.getMessage());
+        }
     }
 
     private void showMovieCreationInterface() {
@@ -75,7 +96,8 @@ public class GuiController {
 
         } while (!validado);
     }
-    public void showAllMovies(){
+
+    public void showAllMovies() {
 
     }
 

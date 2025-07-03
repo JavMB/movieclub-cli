@@ -1,12 +1,13 @@
 package logic;
 
-
 import gui.GuiController;
 import logic.services.MoviesService;
 import persistance.PersistanceController;
+import persistance.entity.Movie;
 import persistance.entity.enums.PegiEnum;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class LogicController {
     private final static int MAX_MOVIES = 50;
@@ -23,6 +24,12 @@ public class LogicController {
         var moviesService = new MoviesService(persistanceController);
         moviesService.createMovie(titulo, genero, director, pegi, fecha, stock);
     }
+    public List<Movie> retrieveAllMovies(){
+        var movies=persistanceController.getAllMovies();
+
+        return null;
+    }
+
 
 
     public int getMaxMovies() {

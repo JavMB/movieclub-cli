@@ -10,6 +10,7 @@ import persistance.entity.Movie;
 import persistance.entity.enums.PegiEnum;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class MoviesService {
 
@@ -77,6 +78,7 @@ public class MoviesService {
 
         if (!titulo.equals(titulo.toLowerCase()) || !profanityFilter.isValid(titulo)) {
             return false;
+
         }
 
         return true;
@@ -107,6 +109,10 @@ public class MoviesService {
     private boolean validateStock(int stock) {
         // No stock negativo y ademas validar valor maximo.
         return stock <= persistanceController.getLogicController().getMaxMovies() && stock >= 0;
+    }
+
+    public List<Movie> retrieveAllMovies() {
+        return persistanceController.getLogicController().retrieveAllMovies();
     }
 
 

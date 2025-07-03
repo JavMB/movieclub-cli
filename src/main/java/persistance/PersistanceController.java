@@ -5,6 +5,7 @@ import logic.LogicController;
 import persistance.entity.Movie;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,6 +28,9 @@ public class PersistanceController {
         movies.put(movie.getId(), movie);
         movieCount++;
     }
+    public List<Movie> getAllMovies() {
+        return movies.values().stream().toList(); // mutabilidad? new?
+    }
 
     public Optional<Movie> getMovieById(int id) {
         return Optional.ofNullable(movies.get(id));
@@ -35,4 +39,6 @@ public class PersistanceController {
     public LogicController getLogicController() {
         return logicController;
     }
+
+
 }
