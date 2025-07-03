@@ -3,7 +3,7 @@ package logic.filters;
 import java.util.Set;
 
 public class GenreFilter implements Filter<String> {
-    private Set<String> bannedGenres;
+    private final Set<String> bannedGenres;
 
     public GenreFilter() {
         bannedGenres = Set.of("porno", "erótico", "adulto");

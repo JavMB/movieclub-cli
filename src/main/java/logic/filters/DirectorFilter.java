@@ -3,7 +3,7 @@ package logic.filters;
 import java.util.Set;
 
 public class DirectorFilter implements Filter<String> {
-    private Set<String> bannedDirectors;
+    private final Set<String> bannedDirectors;
 
     public DirectorFilter() {
         bannedDirectors = Set.of("nacho vidal", "tarantino", "quentin tarantino");

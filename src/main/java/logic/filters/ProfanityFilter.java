@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProfanityFilter implements Filter<String> {
-    private Set<String> badWords;
+    private final Set<String> badWords;
 
     public ProfanityFilter() {
         this.badWords = new HashSet<>();

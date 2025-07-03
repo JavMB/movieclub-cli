@@ -12,7 +12,7 @@ public class GuiController {
     private final LogicController logicController;
 
     public GuiController() {
-        this.logicController = new LogicController();
+        this.logicController = new LogicController(this);
     }
 
     public void start() {
@@ -75,6 +75,9 @@ public class GuiController {
 
         } while (!validado);
     }
+    public void showAllMovies(){
+
+    }
 
 
     private int menu() {
@@ -84,7 +87,7 @@ public class GuiController {
         do {
             System.out.println("\n========== VIDEOCLUB ==========");
             System.out.println("1. Crear película");
-            System.out.println("2. Mostrar película");
+            System.out.println("2. Mostrar películas");
             System.out.println("3. Actualizar película");
             System.out.println("4. Eliminar película");
             System.out.println("5. Salir");
