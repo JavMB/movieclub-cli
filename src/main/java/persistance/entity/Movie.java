@@ -85,6 +85,7 @@ public class Movie {
         this.stock = stock;
     }
 
+
     @Override
     public String toString() {
         return "Movie{" +

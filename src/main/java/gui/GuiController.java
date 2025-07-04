@@ -28,14 +28,12 @@ public class GuiController {
                     break;
                 case 2:
                     showAllMoviesInfo();
-
-
+                    break;
                 case 3:
-
-
+                    showUpdateMovieInterface();
+                    break;
                 case 4:
-
-
+                    break;
                 case 5:
                     System.out.println("chao");
                     break;
@@ -48,19 +46,13 @@ public class GuiController {
 
 
     public void showAllMoviesInfo() {
-        try {
-            List<Movie> movies = logicController.retrieveAllMovies();
-            if (movies == null || movies.isEmpty()) {
-                System.out.println("No se encontraron películas.");
-            } else {
-                for (Movie movie : movies) {
-                    System.out.println(movie);
-                }
+        List<Movie> movies = logicController.retrieveAllMovies();
+        if (movies == null || movies.isEmpty()) {
+            System.out.println("No se encontraron películas.");
+        } else {
+            for (Movie movie : movies) {
+                System.out.println(movie);
             }
-        } catch (NullPointerException e) {
-            System.out.println("Error: No se pudo obtener la información de las películas (null recibido).");
-        } catch (Exception e) {
-            System.out.println("Ocurrió un error inesperado: " + e.getMessage());
         }
     }
 
@@ -68,37 +60,83 @@ public class GuiController {
         boolean validado = false;
 
         do {
-            try {
-                System.out.println("\n========== CREAR PELÍCULA ==========");
+            System.out.println("\n========== CREAR PELÍCULA ==========");
 
-                String titulo = IO.readNonEmptyString("Dime el título (minsucula):");
-                String genero = IO.readNonEmptyString("Dime el género:");
-                String director = IO.readNonEmptyString("Dime el director:");
+            String titulo = IO.readNonEmptyString("Dime el título (minúscula):");
+            String genero = IO.readNonEmptyString("Dime el género:");
+            String director = IO.readNonEmptyString("Dime el director:");
 
-                System.out.println("Clasificaciones disponibles: " + Arrays.toString(PegiEnum.values()));
-                PegiEnum pegi = PegiEnum.valueOf(IO.readNonEmptyString("Dime la calificación de edad:").toUpperCase());
+            System.out.println("Clasificaciones disponibles: " + Arrays.toString(PegiEnum.values()));
+            PegiEnum pegi = PegiEnum.valueOf(IO.readNonEmptyString("Dime la calificación de edad:").toUpperCase());
 
-                LocalDate fecha = Fechas.parsearFecha(IO.readString("Dime la fecha (dd/MM/yyyy):"));
-                int stock = IO.readInt("Dime el stock:");
+            LocalDate fecha = Fechas.parsearFecha(IO.readString("Dime la fecha (dd/MM/yyyy):"));
+            int stock = IO.readInt("Dime el stock:");
 
-                logicController.createMovie(titulo, genero, director, pegi, fecha, stock);
-
-                System.out.println("Película creada exitosamente!");
+            if (logicController.createMovie(titulo, genero, director, pegi, fecha, stock)) {
+                System.out.println(logicController.getStatusMessage());
                 validado = true;
-
-            } catch (IllegalArgumentException iae) {
-                System.out.println("Error: " + iae.getMessage());
-                System.out.println("Por favor, intenta de nuevo.\n");
-            } catch (Exception e) {
-                System.out.println("Error inesperado: " + e.getMessage());
+            } else {
+                System.out.println("Error: " + logicController.getStatusMessage());
                 System.out.println("Por favor, intenta de nuevo.\n");
             }
 
         } while (!validado);
     }
 
-    public void showAllMovies() {
+    private void showUpdateMovieInterface() {
+        boolean validado = false;
+        do {
+            System.out.println("\n========== ACTUALIZAR PELÍCULA ==========");
+            int id = IO.readInt("Introduce el ID de la película a actualizar:");
 
+            Movie movie = logicController.getMovieById(id);
+            if (movie == null) {
+                System.out.println(logicController.getStatusMessage() + "\n");
+                return;
+            }
+
+            System.out.println("Datos actuales:");
+            System.out.println(movie);
+
+            String titulo = movie.getTitulo();
+            if (IO.readString("¿Quieres cambiar el título? (s/n):").equalsIgnoreCase("s")) {
+                titulo = IO.readNonEmptyString("Nuevo título:");
+            }
+
+            String genero = movie.getGenero();
+            if (IO.readString("¿Quieres cambiar el género? (s/n):").equalsIgnoreCase("s")) {
+                genero = IO.readNonEmptyString("Nuevo género:");
+            }
+
+            String director = movie.getNombreDirector();
+            if (IO.readString("¿Quieres cambiar el director? (s/n):").equalsIgnoreCase("s")) {
+                director = IO.readNonEmptyString("Nuevo director:");
+            }
+
+            PegiEnum pegi = movie.getClasificacionEdad();
+            if (IO.readString("¿Quieres cambiar la clasificación de edad? (s/n):").equalsIgnoreCase("s")) {
+                System.out.println("Clasificaciones disponibles: " + java.util.Arrays.toString(PegiEnum.values()));
+                pegi = PegiEnum.valueOf(IO.readNonEmptyString("Nueva clasificación de edad:").toUpperCase());
+            }
+
+            LocalDate fecha = movie.getFechaLanzamiento();
+            if (IO.readString("¿Quieres cambiar la fecha de lanzamiento? (s/n):").equalsIgnoreCase("s")) {
+                fecha = Fechas.parsearFecha(IO.readString("Nueva fecha (dd/MM/yyyy):"));
+            }
+
+            int stock = movie.getStock();
+            if (IO.readString("¿Quieres cambiar el stock? (s/n):").equalsIgnoreCase("s")) {
+                stock = IO.readInt("Nuevo stock:");
+            }
+
+            if (logicController.updateMovie(id, titulo, genero, director, pegi, fecha, stock)) {
+                System.out.println(logicController.getStatusMessage() + "\n");
+                validado = true;
+            } else {
+                System.out.println("Error: " + logicController.getStatusMessage());
+                System.out.println("Por favor, intenta de nuevo.\n");
+            }
+        } while (!validado);
     }
 
 

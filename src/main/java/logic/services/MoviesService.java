@@ -18,10 +18,12 @@ public class MoviesService {
     private Filter<String> generoFilter;
     private Filter<String> directorFilter;
     private PersistanceController persistanceController;
+    private final int MAX_MOVIES;
 
 
     public MoviesService(PersistanceController pc) {
         this.persistanceController = pc;
+        this.MAX_MOVIES = 40;
         this.profanityFilter = new ProfanityFilter();
         this.generoFilter = new GenreFilter();
         this.directorFilter = new DirectorFilter();
@@ -61,6 +63,13 @@ public class MoviesService {
 
         persistanceController.saveMovie(movie);
 
+    }
+
+    public Movie getMovieById(int id) throws IllegalArgumentException {
+        if (!validateId(id)) {
+            throw new IllegalArgumentException("Id inválido");
+        }
+        return persistanceController.getMovieById(id).orElse(null);
     }
 
     private boolean validateId(int id) {
@@ -108,12 +117,69 @@ public class MoviesService {
 
     private boolean validateStock(int stock) {
         // No stock negativo y ademas validar valor maximo.
-        return stock <= persistanceController.getLogicController().getMaxMovies() && stock >= 0;
+        return stock <= MAX_MOVIES && stock >= 0;
     }
 
     public List<Movie> retrieveAllMovies() {
-        return persistanceController.getLogicController().retrieveAllMovies();
+        return persistanceController.getAllMovies();
     }
 
 
+    public Movie updateMovie(int id, String titulo, String genero, String director, PegiEnum pegi, LocalDate fecha, Integer stock) throws IllegalArgumentException {
+
+        if (!validateId(id)) {
+            throw new IllegalArgumentException("Id inválido");
+        }
+
+        Movie toUpdateMovie = getMovieById(id);
+        if (toUpdateMovie == null) {
+            throw new IllegalArgumentException("Película no encontrada");
+        }
+
+
+        if (titulo != null) {
+            if (!validateTitulo(titulo)) {
+                throw new IllegalArgumentException("Título inválido");
+            }
+            toUpdateMovie.setTitulo(titulo);
+        }
+
+        if (genero != null) {
+            if (!validateGenero(genero)) {
+                throw new IllegalArgumentException("Género inválido");
+            }
+            toUpdateMovie.setGenero(genero);
+        }
+
+        if (director != null) {
+            if (!validateDirector(director)) {
+                throw new IllegalArgumentException("Director inválido");
+            }
+            toUpdateMovie.setNombreDirector(director);
+        }
+
+        if (pegi != null) {
+            if (!validatePegi(pegi)) {
+                throw new IllegalArgumentException("Clasificación PEGI inválida");
+            }
+            toUpdateMovie.setClasificacionEdad(pegi);
+        }
+
+        if (fecha != null) {
+            if (!validateFecha(fecha)) {
+                throw new IllegalArgumentException("Fecha inválida");
+            }
+            toUpdateMovie.setFechaLanzamiento(fecha);
+        }
+
+        if (stock != null) {
+            if (!validateStock(stock)) {
+                throw new IllegalArgumentException("Stock inválido");
+            }
+            toUpdateMovie.setStock(stock);
+        }
+
+        persistanceController.saveMovie(toUpdateMovie);
+        return toUpdateMovie;
+    }
 }
