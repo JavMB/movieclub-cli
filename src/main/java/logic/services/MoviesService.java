@@ -182,4 +182,14 @@ public class MoviesService {
         persistanceController.saveMovie(toUpdateMovie);
         return toUpdateMovie;
     }
+
+    public Movie deleteMovie(int id) throws IllegalArgumentException {
+        Movie toDeleteMovie = getMovieById(id);
+        if (toDeleteMovie == null) {
+            throw new IllegalArgumentException("Movie no encontrada");
+        } else {
+            persistanceController.deleteMovieById(id);
+        }
+        return toDeleteMovie;
+    }
 }

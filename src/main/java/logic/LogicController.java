@@ -72,6 +72,21 @@ public class LogicController {
         }
     }
 
+    public Movie deleteMovie(int id) {
+        try {
+            var moviesService = new MoviesService(persistanceController);
+            Movie deletedMovie = moviesService.deleteMovie(id);
+            statusMessage = "Pelicula eliminada exitosamente!";
+            return deletedMovie;
+        } catch (IllegalArgumentException e) {
+            statusMessage = e.getMessage();
+            return null;
+        } catch (Exception e) {
+            statusMessage = "Error inesperado: " + e.getMessage();
+            return null;
+        }
+    }
+
     public String getStatusMessage() {
         return statusMessage;
     }

@@ -1,7 +1,6 @@
 package persistance;
 
 
-import logic.LogicController;
 import persistance.entity.Movie;
 
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class PersistanceController {
-    ;
+
     private final Map<Integer, Movie> movies;
     private int movieCount;
 
@@ -34,6 +33,10 @@ public class PersistanceController {
 
     public Optional<Movie> getMovieById(int id) {
         return Optional.ofNullable(movies.get(id));
+    }
+
+    public Optional<Movie> deleteMovieById(int id) {
+        return Optional.ofNullable(movies.remove(id));
     }
 
 

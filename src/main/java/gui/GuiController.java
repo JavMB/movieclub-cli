@@ -33,6 +33,7 @@ public class GuiController {
                     showUpdateMovieInterface();
                     break;
                 case 4:
+                    showDeleteMovieInterface();
                     break;
                 case 5:
                     System.out.println("chao");
@@ -139,6 +140,24 @@ public class GuiController {
         } while (!validado);
     }
 
+    private void showDeleteMovieInterface() {
+        boolean validado = false;
+        do {
+            System.out.println("\n========== BORRAR PELÍCULA ==========");
+            int id = IO.readInt("Introduce el ID de la película a borrar:");
+            Movie deleted = logicController.deleteMovie(id);
+            if (deleted != null) {
+                System.out.println("Película borrada correctamente: " + deleted);
+                validado = true;
+            } else {
+                System.out.println("Error: " + logicController.getStatusMessage());
+                String retry = IO.readString("¿Intentar de nuevo? (s/n): ");
+                if (!retry.equalsIgnoreCase("s")) {
+                    validado = true;
+                }
+            }
+        } while (!validado);
+    }
 
     private int menu() {
         boolean valida;
